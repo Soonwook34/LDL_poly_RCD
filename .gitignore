@@ -7,7 +7,7 @@ RCD/data/gendata/
 RCD/RCD_OT/__pycache__/
 RCD/RCD_OT/model/
 RCD/RCD_OT/runs/
-RCD/RCD_OT/result/*.out
+*.out
 RCD/RCD_OT/result/*.txt
 .DS_Store
 
