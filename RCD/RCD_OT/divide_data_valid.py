@@ -1,29 +1,43 @@
 import json
 import random
+import argparse
 
-##############################
-MIN_LOG = 0  # 15
-TRAIN_RATIO = 0.8
-VALID_RATIO = 0.1
-DIR_PATH = "../data/poly/"
-SHUFFLE = True
-##############################
+class DivideDataArgParser(argparse.ArgumentParser):
+    def __init__(self):
+        super(DivideDataArgParser, self).__init__()
+        self.add_argument('--min_log', type=int, default=0,
+                          help='Minimum length of logs')
+        self.add_argument('--shuffle', action='store_true',
+                          help='Shuffle log data')
+        self.add_argument('--train_ratio', type=float, default=0.8,
+                          help='Train set ratio')
+        self.add_argument('--valid_ratio', type=float, default=0.1,
+                          help='Validation set ratio')
+        self.add_argument('--dir_path', type=str, default="../data/poly/",
+                          help='Directory path where log_data.json in')
 
 
-def divide_data():
+# ##############################
+# MIN_LOG = 0  # 15
+# TRAIN_RATIO = 0.8
+# VALID_RATIO = 0.1
+# DIR_PATH = "../data/poly/"
+# SHUFFLE = True
+# ##############################
+def divide_data(args):
     '''
     1. delete students who have fewer than min_log response logs
     2. divide dataset into train_set and test_set (TRAIN_RATIO:1-TRAIN_RATIO) -> Valid 포함까지로 코드 변경
     :return:
     '''
     # 로그 가져오기
-    with open(DIR_PATH + 'log_data.json', encoding='utf8') as i_f:
+    with open(args.dir_path + 'log_data.json', encoding='utf8') as i_f:
         stus = json.load(i_f)
     # 1. delete students who have fewer than min_log response logs
     stu_i = 0
     l_log = 0
     while stu_i < len(stus):
-        if stus[stu_i]['log_num'] < MIN_LOG:
+        if stus[stu_i]['log_num'] < args.min_log:
             del stus[stu_i]
             stu_i -= 1
         else:
@@ -38,8 +52,8 @@ def divide_data():
         stu_train = {'user_id': user_id}
         stu_valid = {'user_id': user_id}
         stu_test = {'user_id': user_id}
-        train_size = int(stu['log_num'] * TRAIN_RATIO)
-        valid_size = int(stu['log_num'] * VALID_RATIO)
+        train_size = int(stu['log_num'] * args.train_ratio)
+        valid_size = int(stu['log_num'] * args.valid_ratio)
         test_size = stu['log_num'] - train_size - valid_size
         valid_set_size += valid_size
         test_set_size += test_size
@@ -47,7 +61,7 @@ def divide_data():
         logs = []
         for log in stu['logs']:
             logs.append(log)
-        if SHUFFLE:
+        if args.shuffle:
             random.shuffle(logs)
 
         # 로그 나누기
@@ -82,13 +96,15 @@ def divide_data():
 
     # 파일에 저장
     print(f"Train {len(train_set)}, Valid {valid_set_size}({len(valid_set)}), Test {test_set_size}({len(test_set)})")
-    with open(DIR_PATH + 'train_set.json', 'w', encoding='utf8') as output_file:
+    with open(args.dir_path + 'train_set.json', 'w', encoding='utf8') as output_file:
         json.dump(train_set, output_file, indent=4, ensure_ascii=False)
-    with open(DIR_PATH + 'valid_set.json', 'w', encoding='utf8') as output_file:
+    with open(args.dir_path + 'valid_set.json', 'w', encoding='utf8') as output_file:
         json.dump(valid_set, output_file, indent=4, ensure_ascii=False)
-    with open(DIR_PATH + 'test_set.json', 'w', encoding='utf8') as output_file:
+    with open(args.dir_path + 'test_set.json', 'w', encoding='utf8') as output_file:
         json.dump(test_set, output_file, indent=4, ensure_ascii=False)
 
 
 if __name__ == '__main__':
-    divide_data()
+    args = DivideDataArgParser().parse_args()
+    print(args)
+    divide_data(args)
