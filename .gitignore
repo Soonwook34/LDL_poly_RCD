@@ -1,10 +1,14 @@
 # Poly Dataset
-RCD/data/poly/
+RCD/data/poly/csv/
+RCD/data/poly/graph/
+RCD/data/poly/*.json
 RCD/data/gendata/
 # model data
 RCD/RCD_OT/__pycache__/
 RCD/RCD_OT/model/
-RCD/RCD_OT/runs
+RCD/RCD_OT/runs/
+RCD/RCD_OT/result/*.out
+RCD/RCD_OT/result/*.txt
 .DS_Store
 
 
