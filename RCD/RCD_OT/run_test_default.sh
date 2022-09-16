@@ -10,38 +10,38 @@ python build_u_e_graph.py
 nohup python -u test.py --gpu 0 --mode 0 --log KT > /dev/null &
 nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.1 > /dev/null &
 python -u test.py --gpu 2 --mode 1 --log KTOT_0.2
-sleep 10
+sleep 5
 
 nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.5 > /dev/null &
 nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.8 > /dev/null &
 python -u test.py --gpu 2 --mode 2 --log OT
-sleep 10
+sleep 5
 
 nohup python -u test.py --gpu 0 --mode 0 --log KT_edge_0 > /dev/null &
 nohup python -u test.py --gpu 1 --mode 0 --log KT_edge_1 > /dev/null &
 python -u test.py --gpu 2 --mode 0 --log KT_edge_2
-sleep 10
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log KTOT_0.1_edge_0 > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log KTOT_0.1_edge_1 > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log KTOT_0.1_edge_2
-sleep 10
+nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.1_edge_0 > /dev/null &
+nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.1_edge_1 > /dev/null &
+python -u test.py --gpu 2 --mode 1 --log KTOT_0.1_edge_2
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log KTOT_0.2_edge_0 > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log KTOT_0.2_edge_1 > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log KTOT_0.2_edge_2
-sleep 10
+nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.2_edge_0 > /dev/null &
+nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.2_edge_1 > /dev/null &
+python -u test.py --gpu 2 --mode 1 --log KTOT_0.2_edge_2
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log KTOT_0.5_edge_0 > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log KTOT_0.5_edge_1 > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log KTOT_0.5_edge_2
-sleep 10
+nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.5_edge_0 > /dev/null &
+nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.5_edge_1 > /dev/null &
+python -u test.py --gpu 2 --mode 1 --log KTOT_0.5_edge_2
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log KTOT_0.8_edge_0 > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log KTOT_0.8_edge_1 > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log KTOT_0.8_edge_2
-sleep 10
+nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.8_edge_0 > /dev/null &
+nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.8_edge_1 > /dev/null &
+python -u test.py --gpu 2 --mode 1 --log KTOT_0.8_edge_2
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log OT_edge_0 > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log OT_edge_1 > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log OT_edge_2
+nohup python -u test.py --gpu 0 --mode 2 --log OT_edge_0 > /dev/null &
+nohup python -u test.py --gpu 1 --mode 2 --log OT_edge_1 > /dev/null &
+python -u test.py --gpu 2 --mode 2 --log OT_edge_2

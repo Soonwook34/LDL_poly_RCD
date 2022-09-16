@@ -10,38 +10,38 @@ python build_u_e_graph.py
 nohup python -u test.py --gpu 0 --mode 0 --log KT_shuffle > /dev/null &
 nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.1_shuffle > /dev/null &
 python -u test.py --gpu 2 --mode 1 --log KTOT_0.2_shuffle
-sleep 10
+sleep 5
 
 nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.5_shuffle > /dev/null &
 nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.8_shuffle > /dev/null &
 python -u test.py --gpu 2 --mode 2 --log OT_shuffle
-sleep 10
+sleep 5
 
 nohup python -u test.py --gpu 0 --mode 0 --log KT_edge_0_shuffle > /dev/null &
 nohup python -u test.py --gpu 1 --mode 0 --log KT_edge_1_shuffle > /dev/null &
 python -u test.py --gpu 2 --mode 0 --log KT_edge_2_shuffle
-sleep 10
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log KTOT_0.1_edge_0_shuffle > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log KTOT_0.1_edge_1_shuffle > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log KTOT_0.1_edge_2_shuffle
-sleep 10
+nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.1_edge_0_shuffle > /dev/null &
+nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.1_edge_1_shuffle > /dev/null &
+python -u test.py --gpu 2 --mode 1 --log KTOT_0.1_edge_2_shuffle
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log KTOT_0.2_edge_0_shuffle > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log KTOT_0.2_edge_1_shuffle > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log KTOT_0.2_edge_2_shuffle
-sleep 10
+nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.2_edge_0_shuffle > /dev/null &
+nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.2_edge_1_shuffle > /dev/null &
+python -u test.py --gpu 2 --mode 1 --log KTOT_0.2_edge_2_shuffle
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log KTOT_0.5_edge_0_shuffle > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log KTOT_0.5_edge_1_shuffle > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log KTOT_0.5_edge_2_shuffle
-sleep 10
+nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.5_edge_0_shuffle > /dev/null &
+nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.5_edge_1_shuffle > /dev/null &
+python -u test.py --gpu 2 --mode 1 --log KTOT_0.5_edge_2_shuffle
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log KTOT_0.8_edge_0_shuffle > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log KTOT_0.8_edge_1_shuffle > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log KTOT_0.8_edge_2_shuffle
-sleep 10
+nohup python -u test.py --gpu 0 --mode 1 --log KTOT_0.8_edge_0_shuffle > /dev/null &
+nohup python -u test.py --gpu 1 --mode 1 --log KTOT_0.8_edge_1_shuffle > /dev/null &
+python -u test.py --gpu 2 --mode 1 --log KTOT_0.8_edge_2_shuffle
+sleep 5
 
-nohup python -u test.py --gpu 0 --mode 0 --log OT_edge_0_shuffle > /dev/null &
-nohup python -u test.py --gpu 1 --mode 0 --log OT_edge_1_shuffle > /dev/null &
-python -u test.py --gpu 2 --mode 0 --log OT_edge_2_shuffle
+nohup python -u test.py --gpu 0 --mode 2 --log OT_edge_0_shuffle > /dev/null &
+nohup python -u test.py --gpu 1 --mode 2 --log OT_edge_1_shuffle > /dev/null &
+python -u test.py --gpu 2 --mode 2 --log OT_edge_2_shuffle
