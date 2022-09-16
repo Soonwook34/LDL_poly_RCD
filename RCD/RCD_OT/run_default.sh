@@ -9,11 +9,11 @@ python build_u_e_graph.py
 
 nohup python -u main.py --gpu 0 --epoch_n 50 --mode 0 --log KT > /dev/null &
 nohup python -u main.py --gpu 1 --epoch_n 50 --mode 1 --lamb 0.1 --log KTOT_0.1 > /dev/null &
-python -u main.py --gpu 2 --epoch_n 50 --mode 1 --lamb 0.1 --log KTOT_0.2
+python -u main.py --gpu 2 --epoch_n 50 --mode 1 --lamb 0.2 --log KTOT_0.2
 sleep 10
 
-nohup python -u main.py --gpu 0 --epoch_n 50 --mode 1 --lamb 0.1 --log KTOT_0.5 > /dev/null &
-nohup python -u main.py --gpu 1 --epoch_n 50 --mode 1 --lamb 0.1 --log KTOT_0.8 > /dev/null &
+nohup python -u main.py --gpu 0 --epoch_n 50 --mode 1 --lamb 0.5 --log KTOT_0.5 > /dev/null &
+nohup python -u main.py --gpu 1 --epoch_n 50 --mode 1 --lamb 0.8 --log KTOT_0.8 > /dev/null &
 python -u main.py --gpu 2 --epoch_n 50 --mode 2 --log OT
 sleep 10
 
