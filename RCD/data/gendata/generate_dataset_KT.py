@@ -79,7 +79,6 @@ class Concept():
         self.c_pre = int((c - 1) / 2)
 
     def sample_ability(self, student):
-        # print(student.abilities[self.c_pre])
         return min(max(norm(student.abilities[self.c_pre], 0.1).rvs(self.sample_n).mean(), 0), 1)
 
 
@@ -96,31 +95,23 @@ def generate_dataset(args):
         logs = []
         for concept in concepts:
             p_c = concept.sample_ability(student)
-            # print(concept.num, concept.c_pre, p_c)
             for exercise in exercises[concept.num]:
                 p_e_given_c = exercise.ICC(p_c)
-                # print(f"p(e|c) = {p_e_given_c}")
                 a_se = bernoulli.rvs(p_e_given_c)
-                # print(f"a_se = {a_se}")
                 student.responses[concept.num][exercise.num] = a_se
                 student.answers[concept.num][exercise.num] = a_se
                 logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se, "knowledge_code": [concept.num]})
             student.calc_ability(concept.num)
             # 평균 정답률
             right_rate.append(student.abilities[concept.num])
-            # print(f"p(c_{concept.num}): {student.abilities[concept.num]}({student.abilities[concept.c_pre]})")
         dataset.append(logs)
-    # print(sum(ab) / len(ab))
     return dataset, sum(right_rate) / len(right_rate)
-    # return dataset
 
 
 def convert_dataset(dataset):
     log_data_dict = {}
-
     for student_id, logs in enumerate(dataset):
         log_data_dict[student_id] = {"user_id": student_id+1, "log_num": len(logs), "logs": logs}
-    # TODO: convert dataset into json form
 
     log_data = list(log_data_dict.values())
     log_data = sorted(log_data, key=lambda log: log["user_id"])
