@@ -90,9 +90,10 @@ def generate_dataset(args):
     exercises = [[Exercise(args, e, c) for e in range(exercise_per_concept)] for c in range(args.concept_n)]
     concepts = [Concept(args, c) for c in range(args.concept_n)]
 
-    ab = []
+    right_rate = []
     for student in students:
         student.abilities[0] = random.uniform(args.ability_min, args.ability_max)
+        logs = []
         for concept in concepts:
             p_c = concept.sample_ability(student)
             # print(concept.num, concept.c_pre, p_c)
@@ -103,29 +104,38 @@ def generate_dataset(args):
                 # print(f"a_se = {a_se}")
                 student.responses[concept.num][exercise.num] = a_se
                 student.answers[concept.num][exercise.num] = a_se
+                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se, "knowledge_code": [concept.num]})
             student.calc_ability(concept.num)
-            ab.append(student.abilities[concept.num])
+            # 평균 정답률
+            right_rate.append(student.abilities[concept.num])
             # print(f"p(c_{concept.num}): {student.abilities[concept.num]}({student.abilities[concept.c_pre]})")
+        dataset.append(logs)
     # print(sum(ab) / len(ab))
-    return sum(ab) / len(ab)
+    return dataset, sum(right_rate) / len(right_rate)
     # return dataset
 
 
 def convert_dataset(dataset):
-    log_data = []
+    log_data_dict = {}
+
+    for student_id, logs in enumerate(dataset):
+        log_data_dict[student_id] = {"user_id": student_id+1, "log_num": len(logs), "logs": logs}
     # TODO: convert dataset into json form
+
+    log_data = list(log_data_dict.values())
+    log_data = sorted(log_data, key=lambda log: log["user_id"])
     return log_data
 
 
 if __name__ == '__main__':
     args = GenDataArgParser().parse_args()
     print(str(args))
-    ab = []
-    for i in range(100):
+    ability_log = []
+    for i in range(1):
         print(f"{i}...")
-        a = generate_dataset(args)
-        ab.append(a)
-    print(sum(ab) / len(ab))
-    # log_data = convert_dataset(dataset)
-    # with open(f"./log_data_{args.name}.json", 'w', encoding='utf8') as output_file:
-    #     json.dump(log_data, output_file, indent=4, ensure_ascii=False)
+        dataset, rr = generate_dataset(args)
+        ability_log.append(rr)
+    print(sum(ability_log) / len(ability_log))
+    log_data = convert_dataset(dataset)
+    with open(f"./log_data_{args.name}.json", 'w', encoding='utf8') as output_file:
+        json.dump(log_data, output_file, indent=4, ensure_ascii=False)
