@@ -21,21 +21,21 @@ class GenDataArgParser(argparse.ArgumentParser):
         self.add_argument('--name', type=str, default='test',
                           help='Dataset name')
         self.add_argument('--ability_min', type=float, default=0,
-                          help="Min vaule of student's initial ability, [0,1)")
+                          help="Min value of student's initial ability, [0,1)")
         self.add_argument('--ability_max', type=float, default=1,
-                          help="Max vaule of student's initial ability, (args.ability_min, 1]")
+                          help="Max value of student's initial ability, (args.ability_min, 1]")
         self.add_argument('--difficulty_min', type=float, default=0,
-                          help="Min vaule of exercise's difficulty")
+                          help="Min value of exercise's difficulty")
         self.add_argument('--difficulty_max', type=float, default=5,
-                          help="Max vaule of exercise's difficulty")
+                          help="Max value of exercise's difficulty")
         self.add_argument('--discrimination_min', type=float, default=0.5,
-                          help="Min vaule of exercise's discrimination")
+                          help="Min value of exercise's discrimination")
         self.add_argument('--discrimination_max', type=float, default=2,
-                          help="Max vaule of exercise's discrimination")
+                          help="Max value of exercise's discrimination")
         self.add_argument('--pseudo_guessing_min', type=float, default=-0.2,
-                          help="Min vaule of exercise's pseudo guessing")
+                          help="Min value of exercise's pseudo guessing")
         self.add_argument('--pseudo_guessing_max', type=float, default=0.2,
-                          help="Max vaule of exercise's pseudo guessing")
+                          help="Max value of exercise's pseudo guessing")
 
 
 class Student():

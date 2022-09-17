@@ -21,21 +21,21 @@ class GenDataArgParser(argparse.ArgumentParser):
         self.add_argument('--name', type=str, default='test',
                           help='Dataset name')
         self.add_argument('--ability_min', type=float, default=0,
-                          help="Min vaule of student's initial ability, [0,1)")
+                          help="Min value of student's initial ability, [0,1)")
         self.add_argument('--ability_max', type=float, default=1,
-                          help="Max vaule of student's initial ability, (args.ability_min, 1]")
+                          help="Max value of student's initial ability, (args.ability_min, 1]")
         self.add_argument('--difficulty_min', type=float, default=0,
-                          help="Min vaule of exercise's difficulty")
+                          help="Min value of exercise's difficulty")
         self.add_argument('--difficulty_max', type=float, default=5,
-                          help="Max vaule of exercise's difficulty")
+                          help="Max value of exercise's difficulty")
         self.add_argument('--discrimination_min', type=float, default=0.5,
-                          help="Min vaule of exercise's discrimination")
+                          help="Min value of exercise's discrimination")
         self.add_argument('--discrimination_max', type=float, default=2,
-                          help="Max vaule of exercise's discrimination")
+                          help="Max value of exercise's discrimination")
         self.add_argument('--pseudo_guessing_min', type=float, default=-0.2,
-                          help="Min vaule of exercise's pseudo guessing")
+                          help="Min value of exercise's pseudo guessing")
         self.add_argument('--pseudo_guessing_max', type=float, default=0.2,
-                          help="Max vaule of exercise's pseudo guessing")
+                          help="Max value of exercise's pseudo guessing")
 
 
 class Student():
@@ -100,7 +100,7 @@ def generate_dataset(args):
                 a_se = bernoulli.rvs(p_e_given_c)
                 student.responses[concept.num][exercise.num] = a_se
                 student.answers[concept.num][exercise.num] = a_se
-                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se, "knowledge_code": [concept.num]})
+                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se, "knowledge_code": [concept.num + 1]})
             student.calc_ability(concept.num)
             # 평균 정답률
             right_rate.append(student.abilities[concept.num])
@@ -111,7 +111,7 @@ def generate_dataset(args):
 def convert_dataset(dataset):
     log_data_dict = {}
     for student_id, logs in enumerate(dataset):
-        log_data_dict[student_id] = {"user_id": student_id+1, "log_num": len(logs), "logs": logs}
+        log_data_dict[student_id] = {"user_id": student_id + 1, "log_num": len(logs), "logs": logs}
 
     log_data = list(log_data_dict.values())
     log_data = sorted(log_data, key=lambda log: log["user_id"])
@@ -121,12 +121,25 @@ def convert_dataset(dataset):
 if __name__ == '__main__':
     args = GenDataArgParser().parse_args()
     print(str(args))
+
     ability_log = []
     for i in range(1):
         print(f"{i}...")
         dataset, rr = generate_dataset(args)
         ability_log.append(rr)
     print(sum(ability_log) / len(ability_log))
+
     log_data = convert_dataset(dataset)
     with open(f"./log_data_{args.name}.json", 'w', encoding='utf8') as output_file:
         json.dump(log_data, output_file, indent=4, ensure_ascii=False)
+
+    # TODO: 만들어야하는 데이터
+    # 1번부터 시작하는 데이터
+    # concept_mapping.csv, concept_relation.csv
+    # log_data.json (make_log_dat.py)
+    # train_set.json, valid_set.json, test_set.json (divide_data.py)
+    # 0 번부터 시작하는 데이터
+    # K_Directed.txt, K_Undirected.txt (make_dependency_data.py)
+    # e_from_k.txt, k_from_e.txt (build_k_e_graph.py)
+    # e_from_u.txt, u_from_e.txt (build_u_e_graph.py)
+    # main/DataLoader (data_loader.py)
