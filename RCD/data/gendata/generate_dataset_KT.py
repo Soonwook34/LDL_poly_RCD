@@ -102,7 +102,8 @@ def generate_dataset(args):
                 a_se = bernoulli.rvs(p_e_given_c)
                 student.responses[concept.num][exercise.num] = a_se
                 student.answers[concept.num][exercise.num] = a_se
-                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se, "knowledge_code": [concept.num + 1]})
+                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se,
+                             "p_e": p_e_given_c, "knowledge_code": [concept.num + 1]})
             student.calc_ability(concept.num)
             # 평균 정답률
             right_rate.append(student.abilities[concept.num])
