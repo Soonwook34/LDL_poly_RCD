@@ -3,7 +3,7 @@ RCD/data/poly/csv/
 RCD/data/poly/graph/
 RCD/data/poly/*.json
 RCD/data/gendata/*.json
-RCD/data/poly/graph/
+RCD/data/gendata/graph/
 # model data
 RCD/RCD_OT/__pycache__/
 RCD/RCD_OT/model/
