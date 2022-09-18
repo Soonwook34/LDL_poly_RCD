@@ -2,7 +2,10 @@ import numpy as np
 import argparse
 import json
 import random
+import os
 from scipy.stats import norm, bernoulli
+
+from check_stats import check_stats
 
 
 class GenDataArgParser(argparse.ArgumentParser):
@@ -14,13 +17,13 @@ class GenDataArgParser(argparse.ArgumentParser):
                           help='Number of exercises')
         self.add_argument('--concept_n', type=int, default=5,
                           help='Number of concepts')
-        self.add_argument('--concept_map', type=int, default=1,
+        self.add_argument('--concept_map', type=int, default=0,
                           help='Shape of concept map / 0: line, 1: binary tree')
         self.add_argument('--sample_n', type=int, default=100,
                           help='Number of sampling')
         self.add_argument('--name', type=str, default='test',
                           help='Dataset name')
-        self.add_argument('--ability_min', type=float, default=0,
+        self.add_argument('--ability_min', type=float, default=0.5,
                           help="Min value of student's initial ability, [0,1)")
         self.add_argument('--ability_max', type=float, default=1,
                           help="Max value of student's initial ability, (args.ability_min, 1]")
@@ -30,11 +33,11 @@ class GenDataArgParser(argparse.ArgumentParser):
                           help="Max value of exercise's difficulty")
         self.add_argument('--discrimination_min', type=float, default=0.5,
                           help="Min value of exercise's discrimination")
-        self.add_argument('--discrimination_max', type=float, default=2,
+        self.add_argument('--discrimination_max', type=float, default=1,
                           help="Max value of exercise's discrimination")
         self.add_argument('--pseudo_guessing_min', type=float, default=-0.2,
                           help="Min value of exercise's pseudo guessing")
-        self.add_argument('--pseudo_guessing_max', type=float, default=0.2,
+        self.add_argument('--pseudo_guessing_max', type=float, default=0,
                           help="Max value of exercise's pseudo guessing")
 
 
@@ -61,7 +64,7 @@ class Exercise():
         self.pseudo_guessing = np.random.rand() * (args.pseudo_guessing_max - args.pseudo_guessing_min) + args.pseudo_guessing_min
 
     def ICC(self, ability):
-        ability = ability * 4
+        ability = ability * 3
         return min(max((1 - self.pseudo_guessing) / (1 + np.exp(-self.discrimination * (ability - self.difficulty))), 0), 1)
 
 
@@ -71,12 +74,11 @@ class Concept():
         self.sample_n = args.sample_n
         # prerequisite concept of concept c, c_pre
         # 일자 구조
-        if args.concept_map == "0":
+        if args.concept_map == 0:
             self.c_pre = max(c - 1, 0)
         # 이진 트리 구조
-        elif args.concept_map == "1":
+        elif args.concept_map == 1:
             self.c_pre = int((c - 1) / 2)
-        self.c_pre = int((c - 1) / 2)
 
     def sample_ability(self, student):
         return min(max(norm(student.abilities[self.c_pre], 0.1).rvs(self.sample_n).mean(), 0), 1)
@@ -133,13 +135,25 @@ if __name__ == '__main__':
     with open(f"./log_data_{args.name}.json", 'w', encoding='utf8') as output_file:
         json.dump(log_data, output_file, indent=4, ensure_ascii=False)
 
-    # TODO: 만들어야하는 데이터
-    # 1번부터 시작하는 데이터
-    # concept_mapping.csv, concept_relation.csv
-    # log_data.json (make_log_dat.py)
-    # train_set.json, valid_set.json, test_set.json (divide_data.py)
-    # 0 번부터 시작하는 데이터
-    # K_Directed.txt, K_Undirected.txt (make_dependency_data.py)
-    # e_from_k.txt, k_from_e.txt (build_k_e_graph.py)
-    # e_from_u.txt, u_from_e.txt (build_u_e_graph.py)
-    # main/DataLoader (data_loader.py)
+    # K_Directed.txt, K_Undirected.txt
+    dependency = ""
+    for c in range(args.concept_n):
+        if c == 0:
+            continue
+        if args.concept_map == 0:
+            dependency += f"{c - 1}\t{c}\n"
+        else:
+            dependency += f"{int((c - 1) / 2)}\t{c}\n"
+
+    file_name = f'{args.concept_map}_{args.concept_n}'
+    if os.path.isfile(f'./graph/K_Undirected_{file_name}.txt'):
+        os.remove(f'./graph/K_Undirected_{file_name}.txt')
+    if os.path.isfile(f'./graph/K_Directed_{file_name}.txt'):
+        os.remove(f'./graph/K_Directed_{file_name}.txt')
+
+    with open(f'./graph/K_Undirected_{file_name}.txt', 'w') as f:
+        f.write("0\t0\n")
+    with open(f'./graph/K_Directed_{file_name}.txt', 'w') as f:
+        f.write(dependency)
+
+    check_stats(f"./log_data_{args.name}.json")
