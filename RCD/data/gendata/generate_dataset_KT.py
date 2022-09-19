@@ -98,7 +98,7 @@ def generate_dataset(args):
         for concept in concepts:
             p_c = concept.sample_ability(student)
             for exercise in exercises[concept.num]:
-                p_e_given_c = exercise.ICC(p_c)
+                p_e_given_c = exercise.ICC(p_c * student.abilities[concept.c_pre])
                 a_se = bernoulli.rvs(p_e_given_c)
                 student.responses[concept.num][exercise.num] = a_se
                 student.answers[concept.num][exercise.num] = a_se
