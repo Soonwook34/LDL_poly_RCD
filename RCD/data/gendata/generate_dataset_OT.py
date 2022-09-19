@@ -122,10 +122,7 @@ def generate_dataset(args):
                 # p_e_given_c = softmax(p_e_given_c)
                 p_e_given_c = np.array(p_e_given_c / sum(p_e_given_c)).tolist()
                 option = int(np.argmax(multinomial.rvs(n=1, p=p_e_given_c)))
-                if option == exercise.options[0]:
-                    a_se = 1
-                else:
-                    a_se = 0
+                a_se = 1 if option == exercise.options[0] else 0
                 # print(f"{p_c:.3f}, {student.abilities[concept.c_pre]:.3f}, {student.abilities[exercise.c_opt]:.3f}")
                 # print(f"{p_e_given_c}, {a_se} ({option}-{exercise.options[0]})")
                 student.responses[concept.num][exercise.num] = a_se
