@@ -3,7 +3,8 @@ import argparse
 import json
 import random
 import os
-from scipy.stats import norm, bernoulli
+from scipy.stats import norm, multinomial
+from scipy.special import softmax
 
 from check_stats import check_stats
 
@@ -11,33 +12,33 @@ from check_stats import check_stats
 class GenDataArgParser(argparse.ArgumentParser):
     def __init__(self):
         super(GenDataArgParser, self).__init__()
-        self.add_argument('--student_n', type=int, default=4000,
+        self.add_argument('--student_n', type=int, default=1000,
                           help='Number of students')
-        self.add_argument('--exercise_n', type=int, default=50,
+        self.add_argument('--exercise_n', type=int, default=1500,
                           help='Number of exercises')
-        self.add_argument('--concept_n', type=int, default=5,
+        self.add_argument('--concept_n', type=int, default=15,
                           help='Number of concepts')
-        self.add_argument('--concept_map', type=int, default=0,
+        self.add_argument('--concept_map', type=int, default=1,
                           help='Shape of concept map / 0: line, 1: binary tree')
-        self.add_argument('--sample_n', type=int, default=100,
+        self.add_argument('--sample_n', type=int, default=50,
                           help='Number of sampling')
         self.add_argument('--name', type=str, default='test',
                           help='Dataset name')
-        self.add_argument('--ability_min', type=float, default=0.5,
+        self.add_argument('--ability_min', type=float, default=0.4,
                           help="Min value of student's initial ability, [0,1)")
         self.add_argument('--ability_max', type=float, default=1,
                           help="Max value of student's initial ability, (args.ability_min, 1]")
-        self.add_argument('--difficulty_min', type=float, default=0,
+        self.add_argument('--difficulty_min', type=float, default=-0.5,
                           help="Min value of exercise's difficulty")
-        self.add_argument('--difficulty_max', type=float, default=5,
+        self.add_argument('--difficulty_max', type=float, default=0,
                           help="Max value of exercise's difficulty")
-        self.add_argument('--discrimination_min', type=float, default=0.5,
-                          help="Min value of exercise's discrimination")
-        self.add_argument('--discrimination_max', type=float, default=1,
-                          help="Max value of exercise's discrimination")
-        self.add_argument('--pseudo_guessing_min', type=float, default=-0.2,
+        self.add_argument('--discrimination_min', type=float, default=1,
+                          help="Min value of exercise's discrimination, non-zero")
+        self.add_argument('--discrimination_max', type=float, default=1.5,
+                          help="Max value of exercise's discrimination, non-zero")
+        self.add_argument('--pseudo_guessing_min', type=float, default=0,
                           help="Min value of exercise's pseudo guessing")
-        self.add_argument('--pseudo_guessing_max', type=float, default=0,
+        self.add_argument('--pseudo_guessing_max', type=float, default=0.1,
                           help="Max value of exercise's pseudo guessing")
 
 
@@ -59,13 +60,18 @@ class Exercise():
     def __init__(self, args, e, c):
         self.num = e
         self.c = c
+        # related concept on options
+        self.c_opt = random.randint(0, max(c-1, 0))
+        self.options = list(range(4))
+        random.shuffle(self.options)
         self.difficulty = np.random.rand() * (args.difficulty_max - args.difficulty_min) + args.difficulty_min
         self.discrimination = np.random.rand() * (args.discrimination_max - args.discrimination_min) + args.discrimination_min
         self.pseudo_guessing = np.random.rand() * (args.pseudo_guessing_max - args.pseudo_guessing_min) + args.pseudo_guessing_min
 
     def ICC(self, ability):
-        ability = ability * 3
-        return min(max((1 - self.pseudo_guessing) / (1 + np.exp(-self.discrimination * (ability - self.difficulty))), 0), 1)
+        # return ability
+        ability = ability * 6 - 3
+        return min(max((1 - self.pseudo_guessing) / (1 + np.exp(-self.discrimination * (ability - self.difficulty))), 0.0), 1.0)
 
 
 class Concept():
@@ -81,7 +87,7 @@ class Concept():
             self.c_pre = int((c - 1) / 2)
 
     def sample_ability(self, student):
-        return min(max(norm(student.abilities[self.c_pre], 0.1).rvs(self.sample_n).mean(), 0), 1)
+        return min(max(norm(student.abilities[self.c_pre], 0.1).rvs(self.sample_n).mean(), 0.0), 1.0)
 
 
 def generate_dataset(args):
@@ -98,15 +104,39 @@ def generate_dataset(args):
         for concept in concepts:
             p_c = concept.sample_ability(student)
             for exercise in exercises[concept.num]:
-                p_e_given_c = exercise.ICC(p_c)
-                a_se = bernoulli.rvs(p_e_given_c)
+                p_e_given_c = [0] * 4
+                if concept.num == 0:
+                    # p(e_right|c,c_opt)
+                    p_e_given_c[exercise.options[0]] = exercise.ICC(p_c)
+                    # p(e_wrong|c,c_opt)
+                    p_e_given_c[exercise.options[1]] = exercise.ICC(p_c / 10)
+                    p_e_given_c[exercise.options[2]] = exercise.ICC(p_c / 10)
+                    p_e_given_c[exercise.options[3]] = exercise.ICC(p_c / 10)
+                else:
+                    # p(e_right|c,c_opt)
+                    p_e_given_c[exercise.options[0]] = exercise.ICC(p_c * student.abilities[concept.c_pre] * student.abilities[exercise.c_opt])
+                    # p(e_wrong|c,c_opt)
+                    p_e_given_c[exercise.options[1]] = exercise.ICC(p_c * student.abilities[concept.c_pre] * (1 - student.abilities[exercise.c_opt]))
+                    p_e_given_c[exercise.options[2]] = exercise.ICC(p_c * (1 - student.abilities[concept.c_pre]) * student.abilities[exercise.c_opt])
+                    p_e_given_c[exercise.options[3]] = exercise.ICC(p_c * (1 - student.abilities[concept.c_pre]) * (1 - student.abilities[exercise.c_opt]))
+                # p_e_given_c = softmax(p_e_given_c)
+                p_e_given_c = np.array(p_e_given_c / sum(p_e_given_c)).tolist()
+                option = int(np.argmax(multinomial.rvs(n=1, p=p_e_given_c)))
+                if option == exercise.options[0]:
+                    a_se = 1
+                else:
+                    a_se = 0
+                # print(f"{p_c:.3f}, {student.abilities[concept.c_pre]:.3f}, {student.abilities[exercise.c_opt]:.3f}")
+                # print(f"{p_e_given_c}, {a_se} ({option}-{exercise.options[0]})")
                 student.responses[concept.num][exercise.num] = a_se
                 student.answers[concept.num][exercise.num] = a_se
                 logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se,
+                             "answer": exercise.options[0], "option": option,
                              "p_e": p_e_given_c, "knowledge_code": [concept.num + 1]})
             student.calc_ability(concept.num)
             # 평균 정답률
             right_rate.append(student.abilities[concept.num])
+        # print(student.abilities)
         dataset.append(logs)
     return dataset, sum(right_rate) / len(right_rate)
 
