@@ -1,3 +1,4 @@
+cd ../
 cp config_reduce.txt config.txt
 cp ../data/poly/log_data_reduce.json ../data/poly/log_data.json
 cp ../data/poly/train_set_reduce.json ../data/poly/train_set.json

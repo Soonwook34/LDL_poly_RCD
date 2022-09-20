@@ -1,3 +1,4 @@
+cd ../
 cp config_full.txt config.txt
 cp ../data/poly/log_data_shuffle.json ../data/poly/log_data.json
 cp ../data/poly/train_set_shuffle.json ../data/poly/train_set.json

@@ -1,4 +1,4 @@
-cd ../data/poly/
+cd ../../data/poly/
 python make_log_data_default.py
 
 cd ../../RCD_OT/

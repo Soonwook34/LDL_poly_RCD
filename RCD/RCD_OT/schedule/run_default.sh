@@ -1,3 +1,4 @@
+cd ..
 cp config_full.txt config.txt
 cp ../data/poly/log_data_default.json ../data/poly/log_data.json
 cp ../data/poly/train_set_default.json ../data/poly/train_set.json
