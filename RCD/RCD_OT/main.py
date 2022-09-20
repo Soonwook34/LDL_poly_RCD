@@ -139,7 +139,7 @@ def train(args, local_map):
 
 def predict(args, net, epoch):
     device = torch.device(('cuda:%d' % args.gpu) if torch.cuda.is_available() else 'cpu')
-    data_loader = ValTestDataLoader('validation', args.dir)
+    data_loader = ValTestDataLoader(args.dir, 'validation')
     print('predicting model...')
     data_loader.reset()
     net.eval()

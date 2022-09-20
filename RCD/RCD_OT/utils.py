@@ -19,7 +19,7 @@ class CommonArgParser(argparse.ArgumentParser):
                           help='Learning rate')
         self.add_argument('--log', type=str, default="log",
                           help='Save file name')
-        self.add_argument('--dir', type=str, default="../data/poly",
+        self.add_argument('--dir', type=str, default="../data/poly/",
                           help='Directory Path')
         # KT / OT 모드
         self.add_argument('--mode', type=int, default="0",
@@ -43,11 +43,11 @@ class CommonArgParser(argparse.ArgumentParser):
 
 def construct_local_map(args):
     local_map = {
-        'directed_g': build_graph('direct', args.knowledge_n),
-        'undirected_g': build_graph('undirect', args.knowledge_n),
-        'k_from_e': build_graph('k_from_e', args.knowledge_n + args.exer_n),
-        'e_from_k': build_graph('e_from_k', args.knowledge_n + args.exer_n),
-        'u_from_e': build_graph('u_from_e', args.student_n + args.exer_n),
-        'e_from_u': build_graph('e_from_u', args.student_n + args.exer_n),
+        'directed_g': build_graph('direct', args.knowledge_n, args.dir),
+        'undirected_g': build_graph('undirect', args.knowledge_n, args.dir),
+        'k_from_e': build_graph('k_from_e', args.knowledge_n + args.exer_n, args.dir),
+        'e_from_k': build_graph('e_from_k', args.knowledge_n + args.exer_n, args.dir),
+        'u_from_e': build_graph('u_from_e', args.student_n + args.exer_n, args.dir),
+        'e_from_u': build_graph('e_from_u', args.student_n + args.exer_n, args.dir),
     }
     return local_map

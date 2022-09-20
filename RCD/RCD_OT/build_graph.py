@@ -6,16 +6,14 @@ import networkx as nx
 
 import matplotlib.pyplot as plt
 
-DIR_PATH = "../data/poly/"
 
-
-def build_graph(type, node):
+def build_graph(type, node, dir_path):
     # g = dgl.DGLGraph()
     # add 34 nodes into the graph; nodes are labeled from 0~33
     # g.add_nodes(node)
     edge_list = []
     if type == 'direct':
-        with open(DIR_PATH + 'graph/K_Directed.txt', 'r') as f:
+        with open(dir_path + 'graph/K_Directed.txt', 'r') as f:
             for line in f.readlines():
                 line = line.replace('\n', '').split('\t')
                 edge_list.append((int(line[0]), int(line[1])))
@@ -27,7 +25,7 @@ def build_graph(type, node):
             # g.add_edges(src, dst)
         return g
     elif type == 'undirect':
-        with open(DIR_PATH + 'graph/K_Undirected.txt', 'r') as f:
+        with open(dir_path + 'graph/K_Undirected.txt', 'r') as f:
             for line in f.readlines():
                 line = line.replace('\n', '').split('\t')
                 edge_list.append((int(line[0]), int(line[1])))
@@ -40,7 +38,7 @@ def build_graph(type, node):
             g.add_edges(dst, src)
         return g
     elif type == 'k_from_e':
-        with open(DIR_PATH + 'graph/k_from_e.txt', 'r') as f:
+        with open(dir_path + 'graph/k_from_e.txt', 'r') as f:
             for line in f.readlines():
                 line = line.replace('\n', '').split('\t')
                 edge_list.append((int(line[0]), int(line[1])))
@@ -50,7 +48,7 @@ def build_graph(type, node):
         # g.add_edges(src, dst)
         return g
     elif type == 'e_from_k':
-        with open(DIR_PATH + 'graph/e_from_k.txt', 'r') as f:
+        with open(dir_path + 'graph/e_from_k.txt', 'r') as f:
             for line in f.readlines():
                 line = line.replace('\n', '').split('\t')
                 edge_list.append((int(line[0]), int(line[1])))
@@ -60,7 +58,7 @@ def build_graph(type, node):
         # g.add_edges(src, dst)
         return g
     elif type == 'u_from_e':
-        with open(DIR_PATH + 'graph/u_from_e.txt', 'r') as f:
+        with open(dir_path + 'graph/u_from_e.txt', 'r') as f:
             for line in f.readlines():
                 line = line.replace('\n', '').split('\t')
                 edge_list.append((int(line[0]), int(line[1])))
@@ -71,7 +69,7 @@ def build_graph(type, node):
         return g
     elif type == 'e_from_u':
         # 일반 그래프
-        with open(DIR_PATH + 'graph/e_from_u.txt', 'r') as f:
+        with open(dir_path + 'graph/e_from_u.txt', 'r') as f:
             for line in f.readlines():
                 line = line.replace('\n', '').split('\t')
                 edge_list.append((int(line[0]), int(line[1])))
@@ -88,7 +86,7 @@ def build_graph(type, node):
         # })
         # g.add_nodes(node)
         # edge_list = [[], [], [], []]
-        # with open(DIR_PATH + 'graph/e_from_u.txt', 'r') as f:
+        # with open(dir_path + 'graph/e_from_u.txt', 'r') as f:
         #     for line in f.readlines():
         #         line = line.replace('\n', '').split('\t')
         #         edge_list[int(line[2])].append((int(line[0]), int(line[1])))
@@ -99,9 +97,9 @@ def build_graph(type, node):
         return g
 
 
-def get_option_matrix(student_n, exercise_n):
+def get_option_matrix(student_n, exercise_n, dir_path):
     option_matrix = torch.zeros(student_n + exercise_n, exercise_n).to(torch.int64)
-    with open(DIR_PATH + 'graph/e_from_u.txt', 'r') as f:
+    with open(dir_path + 'graph/e_from_u.txt', 'r') as f:
         for line in f.readlines():
             line = line.replace('\n', '').split('\t')
             option_matrix[int(line[0])][int(line[1])] = int(line[2])

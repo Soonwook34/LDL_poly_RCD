@@ -44,10 +44,10 @@ class GraphLayerEdge(nn.Module):
             self.edge_fc = nn.Linear(2 * out_dim, out_dim, bias=False)
         elif self.args.edge_type == 1:
             self.edge_fc = nn.Linear(2 * out_dim + args.option_n, out_dim, bias=False)
-            self.option_matrix = get_option_matrix(args.student_n, args.exer_n).to(self.device)
+            self.option_matrix = get_option_matrix(args.student_n, args.exer_n, args.dir).to(self.device)
         else:
             # self.edge_fc = nn.Linear(out_dim, out_dim, bias=False)
-            self.option_matrix = get_option_matrix(args.student_n, args.exer_n).to(self.device)
+            self.option_matrix = get_option_matrix(args.student_n, args.exer_n, args.dir).to(self.device)
             self.option_emb = nn.Embedding(args.exer_n * args.option_n, out_dim)
 
     def edge_attention(self, edges):

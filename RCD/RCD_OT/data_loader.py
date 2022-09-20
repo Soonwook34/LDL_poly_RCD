@@ -54,7 +54,7 @@ class TrainDataLoader(object):
 
 
 class ValTestDataLoader(object):
-    def __init__(self, d_type='predict', dir_path):
+    def __init__(self, dir_path, d_type='predict'):
         self.ptr = 0
         self.data = []
         self.d_type = d_type

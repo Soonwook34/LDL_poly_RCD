@@ -12,7 +12,7 @@ from utils import CommonArgParser
 from data_loader import ValTestDataLoader
 
 def test(args):
-    data_loader = ValTestDataLoader('test', args.dir)
+    data_loader = ValTestDataLoader(args.dir, 'test')
     device = torch.device(('cuda:%d' % (args.gpu)) if torch.cuda.is_available() else 'cpu')
     net = torch.load(f"model/RCD_{args.log}_best.pt")
 
