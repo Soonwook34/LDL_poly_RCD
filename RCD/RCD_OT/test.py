@@ -1,5 +1,5 @@
 '''
---gpu 0 --mode 1 --log test
+--gpu 0 --mode 1 --log test --dir ../data/poly
 gpu는 기존 모델의 gpu와 같아야 함
 '''
 
@@ -12,7 +12,7 @@ from utils import CommonArgParser
 from data_loader import ValTestDataLoader
 
 def test(args):
-    data_loader = ValTestDataLoader('test')
+    data_loader = ValTestDataLoader('test', args.dir)
     device = torch.device(('cuda:%d' % (args.gpu)) if torch.cuda.is_available() else 'cpu')
     net = torch.load(f"model/RCD_{args.log}_best.pt")
 

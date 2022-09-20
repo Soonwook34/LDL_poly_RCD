@@ -18,7 +18,7 @@ def train(args, local_map):
 
     writer = SummaryWriter(log_dir=f"runs/{args.log}")
 
-    data_loader = TrainDataLoader()
+    data_loader = TrainDataLoader(args.dir)
     device = torch.device(('cuda:%d' % (args.gpu)) if torch.cuda.is_available() else 'cpu')
     net = Net(args, local_map)
     net = net.to(device)
@@ -139,7 +139,7 @@ def train(args, local_map):
 
 def predict(args, net, epoch):
     device = torch.device(('cuda:%d' % args.gpu) if torch.cuda.is_available() else 'cpu')
-    data_loader = ValTestDataLoader('validation')
+    data_loader = ValTestDataLoader('validation', args.dir)
     print('predicting model...')
     data_loader.reset()
     net.eval()

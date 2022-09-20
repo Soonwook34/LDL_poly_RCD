@@ -17,10 +17,10 @@ class CommonArgParser(argparse.ArgumentParser):
                           help='The epoch number of training')
         self.add_argument('--lr', type=float, default=0.0001,
                           help='Learning rate')
-        self.add_argument('--test', action='store_true',
-                          help='Evaluate the model on the testing set in the training process.')
         self.add_argument('--log', type=str, default="log",
                           help='Save file name')
+        self.add_argument('--dir', type=str, default="../data/poly",
+                          help='Directory Path')
         # KT / OT 모드
         self.add_argument('--mode', type=int, default="0",
                           help='Training mode (0: KT, 1: KT+OT (use lamb), 2: OT')

@@ -1,19 +1,17 @@
 import json
 import torch
 
-DIR_PATH = "../data/poly/"
-
 
 class TrainDataLoader(object):
     '''
     data loader for training
     '''
-    def __init__(self):
+    def __init__(self, dir_path):
         self.batch_size = 256
         self.ptr = 0
         self.data = []
 
-        data_file = DIR_PATH + 'train_set.json'
+        data_file = dir_path + 'train_set.json'
         config_file = 'config.txt'
         with open(data_file, encoding='utf8') as i_f:
             self.data = json.load(i_f)
@@ -56,17 +54,17 @@ class TrainDataLoader(object):
 
 
 class ValTestDataLoader(object):
-    def __init__(self, d_type='predict'):
+    def __init__(self, d_type='predict', dir_path):
         self.ptr = 0
         self.data = []
         self.d_type = d_type
 
         if d_type == 'predict':
-            data_file = DIR_PATH + 'test_set.json'
+            data_file = dir_path + 'test_set.json'
         elif d_type == 'validation':
-            data_file = DIR_PATH + 'valid_set.json'
+            data_file = dir_path + 'valid_set.json'
         elif d_type == 'test':
-            data_file = DIR_PATH + 'test_set.json'
+            data_file = dir_path + 'test_set.json'
         config_file = 'config.txt'
         with open(data_file, encoding='utf8') as i_f:
             self.data = json.load(i_f)
