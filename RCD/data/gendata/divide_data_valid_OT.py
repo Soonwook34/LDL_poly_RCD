@@ -1,7 +1,9 @@
 import json
 import random
 import argparse
-from scipy.stats import bernoulli
+import numpy as np
+from scipy.stats import multinomial
+from tqdm import tqdm
 
 class DivideDataArgParser(argparse.ArgumentParser):
     def __init__(self):
@@ -18,6 +20,23 @@ class DivideDataArgParser(argparse.ArgumentParser):
                           help='Dataset name')
 
 
+def reverse(arr):
+    index = [-1] * 4
+    arg_min = np.argmin(arr)
+    arg_max = np.argmax(arr)
+    if arg_min == arg_max:
+        return arr
+    else:
+        index[arg_min] = arg_max
+        index[arg_max] = arg_min
+        mid = []
+        for i in range(4):
+            if i not in [arg_min, arg_max]:
+                mid.append(i)
+        index[mid[0]] = mid[1]
+        index[mid[1]] = mid[0]
+    return arr[index]
+
 # ##############################
 # MIN_LOG = 0  # 15
 # TRAIN_RATIO = 0.8
@@ -27,53 +46,65 @@ class DivideDataArgParser(argparse.ArgumentParser):
 # ##############################
 def divide_data(args):
     # 로그 가져오기
+    print(f"loading log_data_{args.name}.json...")
     with open(f"log_data_{args.name}.json", encoding='utf8') as i_f:
         stus = json.load(i_f)
+    # stus_data = []
+    # for stu in stus:
+    #     stus_data.append(stu)
     # 데이터셋 나누기
     train_set, valid_set, test_set = [], [], []
     valid_set_reverse, test_set_reverse = [], []
     valid_set_size, test_set_size = 0, 0
-    for stu in stus:
-        user_id = stu['user_id']
-        stu_train = {'user_id': user_id}
-        stu_valid = {'user_id': user_id}
-        stu_test = {'user_id': user_id}
-        train_size = int(stu['log_num'] * args.train_ratio)
-        valid_size = int(stu['log_num'] * args.valid_ratio)
-        test_size = stu['log_num'] - train_size - valid_size
-        valid_set_size += valid_size
-        test_set_size += test_size
+    with tqdm(stus, unit="stu") as stus_bar:
+        for stu in stus_bar:
+    # for stu in stus:
+            user_id = stu['user_id']
+            stu_train = {'user_id': user_id}
+            stu_valid = {'user_id': user_id}
+            stu_test = {'user_id': user_id}
+            train_size = int(stu['log_num'] * args.train_ratio)
+            valid_size = int(stu['log_num'] * args.valid_ratio)
+            test_size = stu['log_num'] - train_size - valid_size
+            valid_set_size += valid_size
+            test_set_size += test_size
 
-        logs = []
-        for log in stu['logs']:
-            logs.append(log)
-        # 데이터셋 전체 셔플 여부
-        if args.shuffle:
-            random.shuffle(logs)
+            logs = []
+            for log in stu['logs']:
+                logs.append(log)
+            exercise_size = logs[-1]['exer_id'] + 1
+            concept_size = logs[-1]['knowledge_code'][0]
+            # 데이터셋 전체 셔플 여부
+            if args.shuffle:
+                random.shuffle(logs)
 
-        # 로그 나누기
-        stu_train['log_num'] = train_size
-        stu_train['logs'] = logs[:train_size]
-        stu_valid['log_num'] = valid_size
-        stu_valid['logs'] = logs[train_size:train_size+valid_size]
-        stu_test['log_num'] = test_size
-        stu_test['logs'] = logs[train_size+valid_size:]
+            # 로그 나누기
+            stu_train['log_num'] = train_size
+            stu_train['logs'] = logs[:train_size]
+            stu_valid['log_num'] = valid_size
+            stu_valid['logs'] = logs[train_size:train_size+valid_size]
+            stu_test['log_num'] = test_size
+            stu_test['logs'] = logs[train_size+valid_size:]
 
-        # 나눈 로그 저장
-        for log in stu_train['logs']:
-            train_set.append({'user_id': user_id, 'exer_id': log['exer_id'], 'score': log['score'],
-                              'knowledge_code': log['knowledge_code']})
-        valid_set.append(stu_valid)
-        test_set.append(stu_test)
-        # reverse valid/test 데이터
-        for log in stu_valid['logs']:
-            a_se = bernoulli.rvs(1 - log["p_e"])
-            log['score'] = a_se
-        for log in stu_test['logs']:
-            a_se = bernoulli.rvs(1 - log["p_e"])
-            log['score'] = a_se
-        valid_set_reverse.append(stu_valid)
-        test_set_reverse.append(stu_test)
+            # 나눈 로그 저장
+            for log in stu_train['logs']:
+                train_set.append({'user_id': user_id, 'exer_id': log['exer_id'], 'score': log['score'],
+                                  'option': log['option'], 'knowledge_code': log['knowledge_code']})
+            valid_set.append(stu_valid)
+            test_set.append(stu_test)
+            # reverse valid/test 데이터
+            for log in stu_valid['logs']:
+                log['option'] = int(np.argmax(multinomial.rvs(n=1, p=reverse(np.array(log["p_e"])))))
+                log['score'] = 1 if log['option'] == log["answer"] else 0
+                del log['answer']
+                del log['p_e']
+            for log in stu_test['logs']:
+                log['option'] = int(np.argmax(multinomial.rvs(n=1, p=reverse(np.array(log["p_e"])))))
+                log['score'] = 1 if log['option'] == log["answer"] else 0
+                del log['answer']
+                del log['p_e']
+            valid_set_reverse.append(stu_valid)
+            test_set_reverse.append(stu_test)
     # train set 학생 순서 섞기 (시간 포함)
     random.shuffle(train_set)
 
