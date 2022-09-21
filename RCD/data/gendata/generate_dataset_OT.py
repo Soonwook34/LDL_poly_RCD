@@ -12,11 +12,11 @@ from check_stats import check_stats
 class GenDataArgParser(argparse.ArgumentParser):
     def __init__(self):
         super(GenDataArgParser, self).__init__()
-        self.add_argument('--student_n', type=int, default=1000,
+        self.add_argument('--student_n', type=int, default=100,
                           help='Number of students')
-        self.add_argument('--exercise_n', type=int, default=1500,
+        self.add_argument('--exercise_n', type=int, default=30,
                           help='Number of exercises')
-        self.add_argument('--concept_n', type=int, default=15,
+        self.add_argument('--concept_n', type=int, default=3,
                           help='Number of concepts')
         self.add_argument('--concept_map', type=int, default=1,
                           help='Shape of concept map / 0: line, 1: binary tree')
@@ -127,7 +127,7 @@ def generate_dataset(args):
                 # print(f"{p_e_given_c}, {a_se} ({option}-{exercise.options[0]})")
                 student.responses[concept.num][exercise.num] = a_se
                 student.answers[concept.num][exercise.num] = a_se
-                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se,
+                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num + 1, "score": a_se,
                              "answer": exercise.options[0], "option": option,
                              "p_e": p_e_given_c, "knowledge_code": [concept.num + 1]})
             student.calc_ability(concept.num)
