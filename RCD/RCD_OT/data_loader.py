@@ -54,7 +54,7 @@ class TrainDataLoader(object):
 
 
 class ValTestDataLoader(object):
-    def __init__(self, dir_path, d_type='predict'):
+    def __init__(self, dir_path, d_type='predict', reverse=False):
         self.ptr = 0
         self.data = []
         self.d_type = d_type
@@ -65,6 +65,8 @@ class ValTestDataLoader(object):
             data_file = dir_path + 'valid_set.json'
         elif d_type == 'test':
             data_file = dir_path + 'test_set.json'
+            if reverse:
+                data_file = data_file[:-5] + "_reverse.json"
         config_file = 'config.txt'
         with open(data_file, encoding='utf8') as i_f:
             self.data = json.load(i_f)
