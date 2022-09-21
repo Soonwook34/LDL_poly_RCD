@@ -11,8 +11,8 @@ from tqdm import tqdm
 from utils import CommonArgParser
 from data_loader import ValTestDataLoader
 
-def test(args):
-    data_loader = ValTestDataLoader(args.dir, 'test')
+def test(args, reverse=False):
+    data_loader = ValTestDataLoader(args.dir, 'test', reverse)
     device = torch.device(('cuda:%d' % (args.gpu)) if torch.cuda.is_available() else 'cpu')
     net = torch.load(f"model/RCD_{args.log}_best.pt")
 
@@ -123,7 +123,7 @@ def test(args):
             rmse[i] = np.sqrt(np.mean((label_all[i] - pred_all[i]) ** 2))
             auc[i] = roc_auc_score(label_all[i], pred_all[i])
         test_loss = running_test_loss / exer_count
-        print_str = f"model={args.log}\n" \
+        print_str = f"model={args.log}, reverse={reverse}\n" \
                     f"accuracy_KT={accuracy[0]:.6f}, rmse_KT={rmse[0]:.6f}, auc_KT={auc[0]:.6f}\n" \
                     f"accuracy_OT={accuracy[1]:.6f}, rmse_OT={rmse[1]:.6f}, auc_OT={auc[1]:.6f}, test_loss={test_loss:.6f}"
     else:
@@ -133,11 +133,11 @@ def test(args):
         rmse = np.sqrt(np.mean((label_all - pred_all) ** 2))
         auc = roc_auc_score(label_all, pred_all)
         test_loss = running_test_loss / exer_count
-        print_str = f"model={args.log}\n" \
+        print_str = f"model={args.log}, reverse={reverse}\n" \
                     f"accuracy={accuracy:.6f}, rmse={rmse:.6f}, auc={auc:.6f}, test_loss={test_loss:.6f}"
     print(print_str)
 
-    with open(f'result/RCD_test_result.txt', 'a', encoding='utf8') as f:
+    with open(f'result/RCD_test_result_gen.txt', 'a', encoding='utf8') as f:
         f.write(print_str + '\n')
 
 
@@ -145,4 +145,5 @@ if __name__ == '__main__':
     args = CommonArgParser().parse_args()
 
     test(args)
+    test(args, reverse=True)
 
