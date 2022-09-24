@@ -1,2 +1,2 @@
 # Number of Students, Number of Exercises, Number of Knowledge Concepts (10000,835,835)
-100,30,3
+500,200,10
