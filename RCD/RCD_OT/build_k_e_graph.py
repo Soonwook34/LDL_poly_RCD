@@ -1,5 +1,6 @@
 import json
 import argparse
+from tqdm import tqdm
 
 class KEGraphArgParser(argparse.ArgumentParser):
     def __init__(self):
@@ -18,16 +19,17 @@ def build_local_map(args):
         data = json.load(i_f)
     k_from_e = ''  # e(src) to k(dst)
     e_from_k = ''  # k(src) to k(dst)
-    for line in data:
-        for log in line['logs']:
-            exer_id = log['exer_id'] - 1
-            for k in log['knowledge_code']:
-                if (str(exer_id) + '\t' + str(k - 1 + exer_n)) not in temp_list or (
-                        str(k - 1 + exer_n) + '\t' + str(exer_id)) not in temp_list:
-                    k_from_e += str(exer_id) + '\t' + str(k - 1 + exer_n) + '\n'
-                    e_from_k += str(k - 1 + exer_n) + '\t' + str(exer_id) + '\n'
-                    temp_list.append((str(exer_id) + '\t' + str(k - 1 + exer_n)))
-                    temp_list.append((str(k - 1 + exer_n) + '\t' + str(exer_id)))
+    with tqdm(data, unit="stu") as data_bar:
+        for line in data_bar:
+            for log in line['logs']:
+                exer_id = log['exer_id'] - 1
+                for k in log['knowledge_code']:
+                    if (str(exer_id) + '\t' + str(k - 1 + exer_n)) not in temp_list or (
+                            str(k - 1 + exer_n) + '\t' + str(exer_id)) not in temp_list:
+                        k_from_e += str(exer_id) + '\t' + str(k - 1 + exer_n) + '\n'
+                        e_from_k += str(k - 1 + exer_n) + '\t' + str(exer_id) + '\n'
+                        temp_list.append((str(exer_id) + '\t' + str(k - 1 + exer_n)))
+                        temp_list.append((str(k - 1 + exer_n) + '\t' + str(exer_id)))
     with open(args.dir + 'graph/k_from_e.txt', 'w') as f:
         f.write(k_from_e)
     with open(args.dir + 'graph/e_from_k.txt', 'w') as f:
