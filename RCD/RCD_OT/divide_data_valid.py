@@ -5,7 +5,7 @@ import argparse
 class DivideDataArgParser(argparse.ArgumentParser):
     def __init__(self):
         super(DivideDataArgParser, self).__init__()
-        self.add_argument('--min_log', type=int, default=0,
+        self.add_argument('--min_log', type=int, default=15,
                           help='Minimum length of logs')
         self.add_argument('--shuffle', action='store_true',
                           help='Shuffle log data')
