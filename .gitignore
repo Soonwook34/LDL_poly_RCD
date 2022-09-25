@@ -2,8 +2,10 @@
 RCD/data/poly/csv/
 RCD/data/poly/graph/
 RCD/data/poly/*.json
-RCD/data/gendata/*.json
 RCD/data/gendata/graph/
+RCD/data/gendata/*.json
+RCD/data/NeurIPS/graph/
+RCD/data/NeurIPS/*.json
 # model data
 RCD/RCD_OT/__pycache__/
 RCD/RCD_OT/model/
