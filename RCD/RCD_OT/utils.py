@@ -17,6 +17,8 @@ class CommonArgParser(argparse.ArgumentParser):
                           help='The epoch number of training')
         self.add_argument('--lr', type=float, default=0.0001,
                           help='Learning rate')
+        self.add_argument('--dim', type=int, default=128,
+                          help='Embedding dimension')
         self.add_argument('--log', type=str, default="log",
                           help='Save file name')
         self.add_argument('--dir', type=str, default="../data/poly/",

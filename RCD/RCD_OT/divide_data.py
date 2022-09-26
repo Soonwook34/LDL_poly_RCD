@@ -4,7 +4,7 @@ import random
 ##############################
 MIN_LOG = 0  # 15
 TRAIN_RATIO = 0.8
-DIR_PATH = "../data/poly/"
+DIR_PATH = "../data/junyi/"
 ##############################
 
 
@@ -46,7 +46,7 @@ def divide_data():
         # shuffle logs in train_slice together, get train_set
         for log in stu_train['logs']:
             train_set.append({'user_id': user_id, 'exer_id': log['exer_id'], 'score': log['score'],
-                              'option': log['option'], 'knowledge_code': log['knowledge_code']})
+                              'knowledge_code': log['knowledge_code']})
     random.shuffle(train_set)
     with open(DIR_PATH + 'train_set.json', 'w', encoding='utf8') as output_file:
         json.dump(train_set, output_file, indent=4, ensure_ascii=False)

@@ -105,4 +105,3 @@ class ValTestDataLoader(object):
 
     def reset(self):
         self.ptr = 0
-
