@@ -13,7 +13,7 @@ class DivideDataArgParser(argparse.ArgumentParser):
                           help='Train set ratio')
         self.add_argument('--valid_ratio', type=float, default=0.1,
                           help='Validation set ratio')
-        self.add_argument('--dir_path', type=str, default="../data/poly/",
+        self.add_argument('--dir', type=str, default="../data/poly/",
                           help='Directory path where log_data.json in')
 
 
@@ -21,7 +21,7 @@ class DivideDataArgParser(argparse.ArgumentParser):
 # MIN_LOG = 0  # 15
 # TRAIN_RATIO = 0.8
 # VALID_RATIO = 0.1
-# DIR_PATH = "../data/poly/"
+# dir = "../data/poly/"
 # SHUFFLE = True
 # ##############################
 def divide_data(args):
@@ -31,7 +31,7 @@ def divide_data(args):
     :return:
     '''
     # 로그 가져오기
-    with open(args.dir_path + 'log_data.json', encoding='utf8') as i_f:
+    with open(args.dir + 'log_data.json', encoding='utf8') as i_f:
         stus = json.load(i_f)
     # 1. delete students who have fewer than min_log response logs
     stu_i = 0
@@ -96,11 +96,11 @@ def divide_data(args):
 
     # 파일에 저장
     print(f"Train {len(train_set)}, Valid {valid_set_size}({len(valid_set)}), Test {test_set_size}({len(test_set)})")
-    with open(args.dir_path + 'train_set.json', 'w', encoding='utf8') as output_file:
+    with open(args.dir + 'train_set.json', 'w', encoding='utf8') as output_file:
         json.dump(train_set, output_file, indent=4, ensure_ascii=False)
-    with open(args.dir_path + 'valid_set.json', 'w', encoding='utf8') as output_file:
+    with open(args.dir + 'valid_set.json', 'w', encoding='utf8') as output_file:
         json.dump(valid_set, output_file, indent=4, ensure_ascii=False)
-    with open(args.dir_path + 'test_set.json', 'w', encoding='utf8') as output_file:
+    with open(args.dir + 'test_set.json', 'w', encoding='utf8') as output_file:
         json.dump(test_set, output_file, indent=4, ensure_ascii=False)
 
 
