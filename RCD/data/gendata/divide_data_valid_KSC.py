@@ -4,6 +4,7 @@ import argparse
 import numpy as np
 from scipy.stats import multinomial
 from tqdm import tqdm
+from copy import deepcopy
 
 class DivideDataArgParser(argparse.ArgumentParser):
     def __init__(self):
@@ -57,6 +58,7 @@ def divide_data(args):
     test_size = int(exercise_size / concept_size) - train_size - valid_size
     # 데이터셋 나누기
     train_set, valid_set, test_set = [], [], []
+    train_set_0, valid_set_0, test_set_0 = [], [] ,[]
     valid_set_size, test_set_size = 0, 0
     with tqdm(stus, unit="stu") as stus_bar:
         for stu in stus_bar:
@@ -91,8 +93,21 @@ def divide_data(args):
             for log in stu_train['logs']:
                 train_set.append({'user_id': user_id, 'exer_id': log['exer_id'], 'score': log['score'],
                                   'knowledge_code': log['knowledge_code']})
-            valid_set.append(stu_valid)
-            test_set.append(stu_test)
+            valid_set.append(deepcopy(stu_valid))
+            test_set.append(deepcopy(stu_test))
+
+            # create concept_n=0 dataset
+            for log in stu_train['logs']:
+                train_set_0.append({'user_id': user_id, 'exer_id': log['exer_id'], 'score': log['score'],
+                                  'knowledge_code': 0})
+            for log in stu_valid['logs']:
+                log['knowledge_code'] = 0
+                del log['p_e']
+            for log in stu_test['logs']:
+                log['knowledge_code'] = 0
+                del log['p_e']
+            valid_set_0.append(stu_valid)
+            test_set_0.append(stu_test)
     # train set 학생 순서 섞기 (시간 포함)
     random.shuffle(train_set)
 
@@ -110,6 +125,12 @@ def divide_data(args):
         json.dump(valid_set, output_file, indent=4, ensure_ascii=False)
     with open(f"test_set_{args.name}.json", 'w', encoding='utf8') as output_file:
         json.dump(test_set, output_file, indent=4, ensure_ascii=False)
+    with open(f"train_set_{args.name}_0.json", 'w', encoding='utf8') as output_file:
+        json.dump(train_set_0, output_file, indent=4, ensure_ascii=False)
+    with open(f"valid_set_{args.name}_0.json", 'w', encoding='utf8') as output_file:
+        json.dump(valid_set_0, output_file, indent=4, ensure_ascii=False)
+    with open(f"test_set_{args.name}_0.json", 'w', encoding='utf8') as output_file:
+        json.dump(test_set_0, output_file, indent=4, ensure_ascii=False)
 
 
 if __name__ == '__main__':

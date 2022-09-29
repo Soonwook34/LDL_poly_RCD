@@ -64,7 +64,7 @@ class Exercise:
         self.pseudo_guessing = np.random.rand() * (args.pseudo_guessing_max - args.pseudo_guessing_min) + args.pseudo_guessing_min
 
     def ICC(self, ability):
-        ability = ability * 5
+        ability = ability * 6
         return min(max((1 - self.pseudo_guessing) / (1 + np.exp(-self.discrimination * (ability - self.difficulty))), 0), 1)
 
 
@@ -89,7 +89,7 @@ class Concept:
 
 
 def generate_dataset(args):
-    dataset = []
+    dataset, dataset_0 = [], []
     exercise_per_concept = int(args.exercise_n / args.concept_n)
     students = [Student(args, s, exercise_per_concept) for s in range(args.student_n)]
     exercises = [[Exercise(args, e, c) for e in range(exercise_per_concept)] for c in range(args.concept_n)]
@@ -100,7 +100,7 @@ def generate_dataset(args):
         student.abilities[0] = random.uniform(args.ability_min, args.ability_max)
         if args.concept_map == 2:
             student.abilities[int(args.concept_n / 2)] = random.uniform(args.ability_min, args.ability_max)
-        logs = []
+        logs, logs_0 = [], []
         for concept in concepts:
             p_c = concept.sample_ability(student)
             for exercise in exercises[concept.num]:
@@ -108,14 +108,17 @@ def generate_dataset(args):
                 a_se = bernoulli.rvs(p_e_given_c)
                 student.responses[concept.num][exercise.num] = a_se
                 student.answers[concept.num][exercise.num] = a_se
-                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num, "score": a_se,
+                logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num + 1, "score": a_se,
                              "p_e": p_e_given_c, "knowledge_code": [concept.num + 1]})
+                logs_0.append({"exer_id": concept.num * exercise_per_concept + exercise.num + 1, "score": a_se,
+                             "p_e": p_e_given_c, "knowledge_code": 0})
             student.calc_ability(concept.num)
             # 평균 정답률
             right_rate.append(student.abilities[concept.num])
         dataset.append(logs)
+        dataset_0.append(logs_0)
         print(student.abilities[0], student.abilities[int(args.concept_n / 2)], student.abilities)
-    return dataset, sum(right_rate) / len(right_rate)
+    return dataset, dataset_0, sum(right_rate) / len(right_rate)
 
 
 def convert_dataset(dataset):
@@ -135,13 +138,16 @@ if __name__ == '__main__':
     ability_log = []
     for i in range(1):
         print(f"{i}...")
-        dataset, rr = generate_dataset(args)
+        dataset, dataset_0, rr = generate_dataset(args)
         ability_log.append(rr)
     print(sum(ability_log) / len(ability_log))
 
     log_data = convert_dataset(dataset)
     with open(f"./log_data_{args.name}.json", 'w', encoding='utf8') as output_file:
         json.dump(log_data, output_file, indent=4, ensure_ascii=False)
+    log_data_0 = convert_dataset(dataset_0)
+    with open(f"./log_data_{args.name}_0.json", 'w', encoding='utf8') as output_file:
+        json.dump(log_data_0, output_file, indent=4, ensure_ascii=False)
 
     # K_Directed.txt, K_Undirected.txt
     dependency = ""
