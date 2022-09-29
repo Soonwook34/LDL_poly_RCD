@@ -33,7 +33,10 @@ class TrainDataLoader(object):
             for knowledge_code in log['knowledge_code']:
                 knowledge_emb[knowledge_code - 1] = 1.0
             y = log['score']
-            option = log['option']
+            if 'option' in log:
+                option = log['option']
+            else:
+                option = 0
             input_stu_ids.append(log['user_id'] - 1)
             input_exer_ids.append(log['exer_id'] - 1)
             input_knowedge_embs.append(knowledge_emb)
@@ -91,7 +94,10 @@ class ValTestDataLoader(object):
             input_knowledge_embs.append(knowledge_emb)
             y = log['score']
             # OT
-            option = log['option']
+            if 'option' in log:
+                option = log['option']
+            else:
+                option = 0
             ys.append(y)
             options.append(option)
         self.ptr += 1
