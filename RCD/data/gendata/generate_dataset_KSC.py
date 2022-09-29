@@ -150,8 +150,13 @@ if __name__ == '__main__':
             continue
         if args.concept_map == 0:
             dependency += f"{c - 1}\t{c}\n"
-        else:
+        elif args.concept_map == 1:
             dependency += f"{int((c - 1) / 2)}\t{c}\n"
+        elif args.concept_map == 2:
+            if c == int(args.concept_n / 2):
+                continue
+            else:
+                dependency += f"{c - 1}\t{c}\n"
 
     file_name = f'{args.concept_map}_{args.concept_n}'
     if os.path.isfile(f'./graph/K_Undirected_{file_name}.txt'):
