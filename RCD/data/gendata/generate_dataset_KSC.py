@@ -111,7 +111,7 @@ def generate_dataset(args):
                 logs.append({"exer_id": concept.num * exercise_per_concept + exercise.num + 1, "score": a_se,
                              "p_e": p_e_given_c, "knowledge_code": [concept.num + 1]})
                 logs_0.append({"exer_id": concept.num * exercise_per_concept + exercise.num + 1, "score": a_se,
-                             "p_e": p_e_given_c, "knowledge_code": 0})
+                             "p_e": p_e_given_c, "knowledge_code": 1})
             student.calc_ability(concept.num)
             # 평균 정답률
             right_rate.append(student.abilities[concept.num])
