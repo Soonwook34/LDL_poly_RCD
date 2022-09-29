@@ -26,12 +26,16 @@ def build_local_map(args):
             exer_id = line['exer_id'] - 1
             user_id = line['user_id'] - 1
             # OT: e_from_y에 option 기록
-            option = line['option']
+            if 'option' in line:
+                option = line['option']
             for k in line['knowledge_code']:
                 u_from_e += str(exer_id) + '\t' + str(user_id + exer_n) + '\n'
                 # e_from_u += str(user_id + exer_n) + '\t' + str(exer_id) + '\n'
                 # OT: e_from_u에 option 기록
-                e_from_u += str(user_id + exer_n) + '\t' + str(exer_id) + '\t' + str(option) + '\n'
+                if 'option' in line:
+                    e_from_u += str(user_id + exer_n) + '\t' + str(exer_id) + '\t' + str(option) + '\n'
+                else:
+                    e_from_u += str(user_id + exer_n) + '\t' + str(exer_id) + '\n'
     with open(args.dir + 'graph/u_from_e.txt', 'w') as f:
         f.write(u_from_e)
     with open(args.dir + 'graph/e_from_u.txt', 'w') as f:
