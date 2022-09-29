@@ -99,12 +99,12 @@ def divide_data(args):
             # create concept_n=0 dataset
             for log in stu_train['logs']:
                 train_set_0.append({'user_id': user_id, 'exer_id': log['exer_id'], 'score': log['score'],
-                                  'knowledge_code': 1})
+                                  'knowledge_code': [1]})
             for log in stu_valid['logs']:
-                log['knowledge_code'] = 1
+                log['knowledge_code'] = [1]
                 del log['p_e']
             for log in stu_test['logs']:
-                log['knowledge_code'] = 1
+                log['knowledge_code'] = [1]
                 del log['p_e']
             valid_set_0.append(stu_valid)
             test_set_0.append(stu_test)
