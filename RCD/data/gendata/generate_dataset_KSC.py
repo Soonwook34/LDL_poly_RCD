@@ -11,33 +11,33 @@ from check_stats import check_stats
 class GenDataArgParser(argparse.ArgumentParser):
     def __init__(self):
         super(GenDataArgParser, self).__init__()
-        self.add_argument('--student_n', type=int, default=4000,
+        self.add_argument('--student_n', type=int, default=100,
                           help='Number of students')
-        self.add_argument('--exercise_n', type=int, default=50,
+        self.add_argument('--exercise_n', type=int, default=300,
                           help='Number of exercises')
-        self.add_argument('--concept_n', type=int, default=5,
+        self.add_argument('--concept_n', type=int, default=6,
                           help='Number of concepts')
-        self.add_argument('--concept_map', type=int, default=0,
-                          help='Shape of concept map / 0: line, 1: binary tree')
+        self.add_argument('--concept_map', type=int, default=2,
+                          help='Shape of concept map / 0: line, 1: binary tree, 2: 2 lines')
         self.add_argument('--sample_n', type=int, default=100,
                           help='Number of sampling')
-        self.add_argument('--name', type=str, default='test',
+        self.add_argument('--name', type=str, default='KSC',
                           help='Dataset name')
-        self.add_argument('--ability_min', type=float, default=0.5,
+        self.add_argument('--ability_min', type=float, default=0,
                           help="Min value of student's initial ability, [0,1)")
         self.add_argument('--ability_max', type=float, default=1,
                           help="Max value of student's initial ability, (args.ability_min, 1]")
         self.add_argument('--difficulty_min', type=float, default=0,
                           help="Min value of exercise's difficulty")
-        self.add_argument('--difficulty_max', type=float, default=5,
+        self.add_argument('--difficulty_max', type=float, default=2,
                           help="Max value of exercise's difficulty")
-        self.add_argument('--discrimination_min', type=float, default=0.5,
+        self.add_argument('--discrimination_min', type=float, default=0,
                           help="Min value of exercise's discrimination")
-        self.add_argument('--discrimination_max', type=float, default=1,
+        self.add_argument('--discrimination_max', type=float, default=2,
                           help="Max value of exercise's discrimination")
-        self.add_argument('--pseudo_guessing_min', type=float, default=-0.2,
+        self.add_argument('--pseudo_guessing_min', type=float, default=0,
                           help="Min value of exercise's pseudo guessing")
-        self.add_argument('--pseudo_guessing_max', type=float, default=0,
+        self.add_argument('--pseudo_guessing_max', type=float, default=0.2,
                           help="Max value of exercise's pseudo guessing")
 
 
@@ -64,7 +64,7 @@ class Exercise:
         self.pseudo_guessing = np.random.rand() * (args.pseudo_guessing_max - args.pseudo_guessing_min) + args.pseudo_guessing_min
 
     def ICC(self, ability):
-        ability = ability * 3
+        ability = ability * 5
         return min(max((1 - self.pseudo_guessing) / (1 + np.exp(-self.discrimination * (ability - self.difficulty))), 0), 1)
 
 
@@ -79,6 +79,10 @@ class Concept:
         # 이진 트리 구조
         elif args.concept_map == 1:
             self.c_pre = int((c - 1) / 2)
+        elif args.concept_map == 2:
+            self.c_pre = max(c - 1, 0)
+            if c == int(args.concept_n / 2):
+                self.c_pre = c
 
     def sample_ability(self, student):
         return min(max(norm(student.abilities[self.c_pre], 0.1).rvs(self.sample_n).mean(), 0), 1)
@@ -94,6 +98,8 @@ def generate_dataset(args):
     right_rate = []
     for student in students:
         student.abilities[0] = random.uniform(args.ability_min, args.ability_max)
+        if args.concept_map == 2:
+            student.abilities[int(args.concept_n / 2)] = random.uniform(args.ability_min, args.ability_max)
         logs = []
         for concept in concepts:
             p_c = concept.sample_ability(student)
@@ -108,6 +114,7 @@ def generate_dataset(args):
             # 평균 정답률
             right_rate.append(student.abilities[concept.num])
         dataset.append(logs)
+        print(student.abilities[0], student.abilities[int(args.concept_n / 2)], student.abilities)
     return dataset, sum(right_rate) / len(right_rate)
 
 
