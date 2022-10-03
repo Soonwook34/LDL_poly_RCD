@@ -11,9 +11,9 @@ cp ../data/gendata/graph/K_Undirected_2_6.txt ../data/gendata/graph/K_Undirected
 python build_k_e_graph.py --dir ../data/gendata/
 python build_u_e_graph.py --dir ../data/gendata/
 
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 0 --mode 0 --log KSC_full_1 > /dev/null &
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 1 --mode 0 --log KSC_full_2 > /dev/null &
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 2 --mode 0 --log KSC_full_3 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 0 --mode 0 --log KSC_full_1 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 1 --mode 0 --log KSC_full_2 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 2 --mode 0 --log KSC_full_3 > /dev/null &
 sleep 5
 
 cp ../data/gendata/graph/K_Directed_2_6_no.txt ../data/gendata/graph/K_Directed.txt
@@ -22,9 +22,9 @@ cp ../data/gendata/graph/K_Undirected_2_6_no.txt ../data/gendata/graph/K_Undirec
 python build_k_e_graph.py --dir ../data/gendata/
 python build_u_e_graph.py --dir ../data/gendata/
 
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 0 --mode 0 --log KSC_no_dep_1 > /dev/null &
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 1 --mode 0 --log KSC_no_dep_2 > /dev/null &
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 2 --mode 0 --log KSC_no_dep_3 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 0 --mode 0 --log KSC_no_dep_1 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 1 --mode 0 --log KSC_no_dep_2 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 2 --mode 0 --log KSC_no_dep_3 > /dev/null &
 sleep 5
 
 cp config_KSC2022_0.txt config.txt
@@ -39,7 +39,7 @@ cp ../data/gendata/graph/K_Undirected_2_6_0.txt ../data/gendata/graph/K_Undirect
 python build_k_e_graph.py --dir ../data/gendata/
 python build_u_e_graph.py --dir ../data/gendata/
 
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 0 --mode 0 --log KSC_no_con_1 > /dev/null &
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 1 --mode 0 --log KSC_no_con_2 > /dev/null &
-nohup python -u test_gendata.py --dir ../data/gendata/ --gpu 2 --mode 0 --log KSC_no_con_3 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 0 --mode 0 --log KSC_no_con_1 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 1 --mode 0 --log KSC_no_con_2 > /dev/null &
+nohup python -u test.py --dir ../data/gendata/ --gpu 2 --mode 0 --log KSC_no_con_3 > /dev/null &
 sleep 5
