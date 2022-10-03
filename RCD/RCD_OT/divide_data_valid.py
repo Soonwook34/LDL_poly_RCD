@@ -77,7 +77,9 @@ def divide_data(args):
         test_set.append(stu_test)
         for log in stu_train['logs']:
             train_set.append({'user_id': user_id, 'exer_id': log['exer_id'], 'score': log['score'],
-                                   'option': log['option'], 'knowledge_code': log['knowledge_code']})
+                                   'knowledge_code': log['knowledge_code']})
+            if 'option' in log:
+                train_set[-1]['option'] = log['option']
     # train set 학생 순서 섞기 (시간 포함)
     random.shuffle(train_set)
 

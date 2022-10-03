@@ -35,4 +35,4 @@ def check_stats(file_name):
     print(score_by_concept)
 
 if __name__ == '__main__':
-    check_stats("./log_data_0_5_50_4000.json")
+    check_stats("./log_data_KSC.json")
