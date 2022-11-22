@@ -50,10 +50,26 @@ for i in range(len(student_exercise_df)):
                                        "knowledge_code": exercise_dict[exer_id]})
 
 log_data = list(log_data_dict.values())
-log_data = sorted(log_data, key=lambda log: log["user_id"])
+log_data = sorted(log_data, key=lambda log: log["user_id"])[:2000]     # [:int(len(student_list)/2)]
 
 # log_data.json에 저장
 with open('./log_data.json', 'w', encoding='utf8') as output_file:
     json.dump(log_data, output_file, indent=4, ensure_ascii=False)
 
 print(f"{len(log_data)} logs saved")
+
+student_list, exercise_list, concept_list = [], [], []
+for logs in log_data:
+    student_list.append(logs["user_id"])
+    for log in logs["logs"]:
+        exercise_list.append(log["exer_id"])
+        concept_list += log["knowledge_code"]
+student_list = list(set(student_list))
+exercise_list = list(set(exercise_list))
+concept_list = list(set(concept_list))
+student_list.sort()
+exercise_list.sort()
+concept_list.sort()
+
+# Student 총 2000 (MAX 2000), Exercise 총 948 (MAX 948), Concept 총 86 (MAX 300)
+print(f"Student 총 {len(student_list)} (MAX {student_list[-1]}), Exercise 총 {len(exercise_list)} (MAX {exercise_list[-1]}), Concept 총 {len(concept_list)} (MAX {concept_list[-1]})")
