@@ -7,7 +7,7 @@ class DivideDataArgParser(argparse.ArgumentParser):
         super(DivideDataArgParser, self).__init__()
         self.add_argument('--min_log', type=int, default=15,
                           help='Minimum length of logs')
-        self.add_argument('--shuffle', action='store_true',
+        self.add_argument('--shuffle', action='store_true', default=False,
                           help='Shuffle log data')
         self.add_argument('--train_ratio', type=float, default=0.8,
                           help='Train set ratio')
